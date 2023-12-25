@@ -1,5 +1,4 @@
 CREATE TABLE `dbprovider`.`providers` (
   `provider` VARCHAR(32) NOT NULL, 
-  `no_hp` VARCHAR(255) NOT NULL, 
-  PRIMARY KEY (`provider`, `no_hp`)
+  `no_hp` TEXT NOT NULL, 
 ) ENGINE = InnoDB;
