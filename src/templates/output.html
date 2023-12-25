@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Output</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script>
+  function init() {
+    if (!localStorage.getItem("isLogin")) {
+      window.location.href = "/src/templates"
+    }
+  }
+</script>
+
+<body onload="init()">
+  <div class="container mt-5">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Ganjil</th>
+          <th>Genap</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <script>
+    const socket = new WebSocket('ws://localhost:5000/ws');
+    const baseUrl = "http://localhost:8080/api/provider/"
+
+    socket.addEventListener('message', (event) => {
+      getData()
+    });
+
+    async function getData() {
+      try {
+        const url = baseUrl
+        const api = await fetch(url)
+        const response = await api.json()
+        const data = response.data
+
+        const tableBody = document.getElementById("table-body");
+        while (tableBody.firstChild) {
+          tableBody.removeChild(tableBody.firstChild);
+        }
+
+        const maxRows = Math.max(data.ganjil ? data.ganjil.length : 0, data.genap ? data.genap.length : 0);
+
+        for (let i = 0; i < maxRows; i++) {
+          const row = document.createElement("tr");
+          const ganjilCell = document.createElement("td");
+          const genapCell = document.createElement("td");
+
+          ganjilCell.textContent = Array.isArray(data.ganjil) && data.ganjil[i] !== undefined ? data.ganjil[i] : "";
+          genapCell.textContent = Array.isArray(data.genap) && data.genap[i] !== undefined ? data.genap[i] : "";
+
+          row.appendChild(ganjilCell);
+          row.appendChild(genapCell);
+          tableBody.appendChild(row);
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getData()
+  </script>
+</body>
+
+</html>

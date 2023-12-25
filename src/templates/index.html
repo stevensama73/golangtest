@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In with Google</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<script>
+  function handleCredentialsResponse(response) {
+    if (response.credential) {
+      let jwt = response.credential
+      let user = JSON.parse(atob(jwt.split(".")[1]))
+      localStorage.setItem("isLogin", true)
+    }
+  }
+  function init() {
+    google.accounts.id.initialize({
+      client_id: "736003853658-hgcrpnr09s3elabsut54nnabdda9j6pn.apps.googleusercontent.com",
+      auto_select: true,
+      callback: handleCredentialsResponse
+    })
+    google.accounts.id.prompt()
+  }
+</script>
+
+<body onload="init()">
+
+</body>
+
+</html>
