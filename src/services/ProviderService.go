@@ -30,6 +30,7 @@ func (service *providerService) GetProviders() commons.Response {
 	var noHpData []string
 	var response commons.Response
 	data, err := service.providerRepository.GetProviders()
+	
 	for _, item := range data {
 		noHpData = append(noHpData, helpers.DecryptAESCBC(item.NoHp))
 	}
