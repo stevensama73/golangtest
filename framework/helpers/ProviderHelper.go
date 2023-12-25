@@ -6,9 +6,9 @@ import (
 	"crypto/cipher"
 	"encoding/base64"
 	"fmt"
+	"math/big"
 	"math/rand"
 	"os"
-	"strconv"
 )
 
 func GeneratePhoneNumber() string {
@@ -27,13 +27,13 @@ func GetGanjilGenapNumber(data []string) (map[string][]string, error) {
 	result := make(map[string][]string)
 
 	for _, strNum := range data {
-		num, err := strconv.Atoi(strNum)
-		if err != nil {
-			return nil, err
+		num, success := new(big.Int).SetString(strNum, 10)
+		if !success {
+			return nil, fmt.Errorf("failed to parse the number: %s", strNum)
 		}
 
 		category := "ganjil"
-		if num % 2 == 0 {
+		if num.Mod(num, big.NewInt(2)).Cmp(big.NewInt(0)) == 0 {
 			category = "genap"
 		}
 
